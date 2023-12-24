@@ -1,7 +1,7 @@
-type ReadLinesOptionsConstructor = {
+type ReadLinesSyncOptionsConstructor = {
 	encoding?: string,
 	minBuffer?: number,
 	newLineCharacter?: null | '\n' | '\r\n' | '\r',
 }
 
-export { ReadLinesOptionsConstructor };
+export { ReadLinesSyncOptionsConstructor };

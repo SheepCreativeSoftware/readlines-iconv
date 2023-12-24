@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import iconv from 'iconv-lite';
-import { ReadLinesOptions } from './ReadLinesOptions.js';
-import { ReadLinesOptionsConstructor } from './ReadLinesOptionsConstructor.js';
+import { ReadLinesSyncOptions } from './ReadLinesSyncOptions.js';
+import { ReadLinesSyncOptionsConstructor } from './ReadLinesSyncOptionsConstructor.js';
 
 const zero = 0;
 const unixLineEnding = '\n';
@@ -11,9 +11,9 @@ const lastElement = -1;
 const oneElement = 1;
 
 /** Handler that returns a file line by line, with automatic evaluation of end of line charcter and supports tons of encodings */
-class ReadLines {
+class ReadLinesSync {
 	private fileDescriptor: number | null;
-	private options: ReadLinesOptions;
+	private options: ReadLinesSyncOptions;
 	private endOfFileReached: boolean;
 	private linesCached: string[];
 	private lastCachedLine: string;
@@ -23,7 +23,7 @@ class ReadLines {
 		encoding='uft8',
 		minBuffer=1024,
 		newLineCharacter=null,
-	}: ReadLinesOptionsConstructor) {
+	}: ReadLinesSyncOptionsConstructor) {
 		this.options = {
 			encoding,
 			minBuffer,
@@ -134,4 +134,4 @@ class ReadLines {
 	}
 }
 
-export { ReadLines, ReadLinesOptionsConstructor as ReadLinesOptions };
+export { ReadLinesSync, ReadLinesSyncOptionsConstructor as ReadLinesSyncOptions };

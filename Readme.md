@@ -24,13 +24,13 @@ npm i readlines-iconv
 ## Basic Usage
 The readlines-iconv module can be loaded using ESM:
 ```js
-import { ReadLines } from 'readlines-iconv';
+import { ReadLinesSync } from 'readlines-iconv';
 ```
 
 First you need to integrate readlines-iconv into your application:
 ```js
 const filePath = './directory/someFile.txt';
-const lineHandler = new ReadLines(filePath, options);
+const lineHandler = new ReadLinesSync(filePath, options);
 ```
 
 Each time when you execute `next` it will return one line of the file:
@@ -53,7 +53,7 @@ However, sometimes you may need to change it's configuration.
 
 You can apply a configuration when starting a new instance of readlines-iconv by providing an object.
 ```js
-const lineHandler = new ReadLines(filePath, options);
+const lineHandler = new ReadLinesSync(filePath, options);
 ```
 
 ### Options
