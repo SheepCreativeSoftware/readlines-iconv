@@ -38,7 +38,7 @@ Each time when you execute `next` it will return one line of the file:
 let line = lineHandler.next();
 ```
 The `next` method will return a `string` for each line.
-It will return `null` in case the end of file is reached.
+*It will return `null` in case the end of file is reached.*
 
 It will autommatically close the file handle at the end of the file.
 But you can close the file handle at any time manually:
@@ -77,8 +77,6 @@ Type: `null | '\n' | '\r\n' | '\r'` Default: `null`
 
 readlines-iconv tries to evaluate the specific line ending by itself. 
 To explicitly set the line ending, use the `newLineCharacter` function
-
-You can change the number of digits after the decimal point, for the percentage value using `percentageFractionDigits`
 
 ## License
 Copyright (c) 2023-2024 Marina Egner ([sheepcs.de](https://sheepcs.de)). This is free software and may be redistributed under the terms specified in the LICENSE file.
