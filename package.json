@@ -1,0 +1,48 @@
+{
+  "name": "readlines-iconv",
+  "version": "0.1.0",
+  "description": "Handler that returns a file line by line with a wide range of supported encodings",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "ES2020",
+  "type": "module",
+  "scripts": {
+    "test": "tsc -b && mocha test/ --recursive",
+    "prepare": "tsc -b",
+    "prepublish": "npm run prepare"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SheepCreativeSoftware/readlines-iconv.git"
+  },
+  "keywords": [
+    "readline",
+    "line",
+    "readfile",
+    "linebyline",
+    "sync",
+    "incov",
+    "encoding"
+  ],
+  "author": "Marina Egner",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/SheepCreativeSoftware/readlines-iconv/issues"
+  },
+  "homepage": "https://github.com/SheepCreativeSoftware/readlines-iconv#readme",
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "assert": "^2.1.0",
+    "eslint": "^8.56.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  }
+}
