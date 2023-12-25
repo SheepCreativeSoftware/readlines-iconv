@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { ReadLines } from './ReadLines.js';
-import { ReadLinesSyncOptionsConstructor } from './ReadLinesSyncOptionsConstructor.js';
+import { ReadLinesOptionsConstructor } from './ReadLinesOptionsConstructor.js';
 
 const zero = 0;
 const lastElement = -1;
@@ -10,7 +10,7 @@ class ReadLinesSync extends ReadLines {
 	private fileDescriptor: number | null;
 	private filePosition: number;
 
-	constructor(options: ReadLinesSyncOptionsConstructor) {
+	constructor(options: ReadLinesOptionsConstructor) {
 		super(options || {});
 		this.filePosition = zero;
 		this.fileDescriptor = null;
@@ -74,4 +74,4 @@ class ReadLinesSync extends ReadLines {
 	}
 }
 
-export { ReadLinesSync, ReadLinesSyncOptionsConstructor as ReadLinesSyncOptions };
+export { ReadLinesSync };

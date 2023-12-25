@@ -1,9 +1,9 @@
-import { ReadLinesAsync, ReadLinesAsyncOptions } from './ReadLinesAsync.js';
-import { ReadLinesSync, ReadLinesSyncOptions } from './ReadLinesSync.js';
+import { ReadLinesAsync } from './ReadLinesAsync.js';
+import { ReadLinesOptionsConstructor } from './ReadLinesOptionsConstructor.js';
+import { ReadLinesSync } from './ReadLinesSync.js';
 
 export {
 	ReadLinesAsync,
-	ReadLinesAsyncOptions,
+	ReadLinesOptionsConstructor as ReadLinesOptions,
 	ReadLinesSync,
-	ReadLinesSyncOptions,
 };

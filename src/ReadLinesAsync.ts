@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import { PathLike } from 'fs';
 import { ReadLines } from './ReadLines.js';
-import { ReadLinesAsyncOptionsConstructor } from './ReadLinesAsyncOptionsConstructor.js';
+import { ReadLinesOptionsConstructor } from './ReadLinesOptionsConstructor.js';
 
 const zero = 0;
 const lastElement = -1;
@@ -11,7 +11,7 @@ class ReadLinesAsync extends ReadLines {
 	private filePosition: number;
 	private fileHandler: fs.FileHandle | null;
 
-	constructor(options: ReadLinesAsyncOptionsConstructor) {
+	constructor(options: ReadLinesOptionsConstructor) {
 		super(options || {});
 		this.filePosition = zero;
 		this.fileHandler = null;
@@ -76,4 +76,4 @@ class ReadLinesAsync extends ReadLines {
 	}
 }
 
-export { ReadLinesAsync, ReadLinesAsyncOptionsConstructor as ReadLinesAsyncOptions };
+export { ReadLinesAsync };
