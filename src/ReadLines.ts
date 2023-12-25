@@ -14,6 +14,11 @@ class ReadLines {
 	private endOfFileReached: boolean;
 	private linesCached: string[];
 	private lastCachedLine: string;
+	private lineEnding: {
+		unix: Buffer,
+		windows: Buffer,
+		legacyOsx: Buffer,
+	};
 
 	constructor({
 		encoding='utf8',
@@ -28,6 +33,13 @@ class ReadLines {
 		this.endOfFileReached = false;
 		this.linesCached = [];
 		this.lastCachedLine = '';
+
+		// Use iconv to convert new line character(s) as there are differences depending on encoding
+		this.lineEnding = {
+			legacyOsx: iconv.encode(legacyOsxLineEnding, encoding),
+			unix: iconv.encode(unixLineEnding, encoding),
+			windows: iconv.encode(windowsLineEnding, encoding),
+		};
 	}
 
 	protected getOptions(): ReadLinesOptions {
@@ -73,20 +85,25 @@ class ReadLines {
 	/** Returns the line ending of the file and stores this internally for later usage otherwise returns `null` */
 	protected getFileLineEnding(fileData: Buffer | undefined): string | null {
 		if(typeof fileData === 'undefined') return null;
-		if(this.options.newLineCharacter !== null && fileData.includes(this.options.newLineCharacter)) return this.options.newLineCharacter;
+
+		// Use iconv to convert new line character(s) as there are differences depending on encoding
+		if(this.options.newLineCharacter !== null && fileData.includes(iconv.encode(this.options.newLineCharacter, this.options.encoding))) {
+			// ...
+			return this.options.newLineCharacter;
+		}
 
 		// If cariage return AND line feed included then it must be a windows line ending
-		if(fileData.includes(windowsLineEnding)) {
+		if(fileData.includes(this.lineEnding.windows)) {
 			this.options.newLineCharacter = windowsLineEnding;
 			return windowsLineEnding;
 		}
 
 		// If only one is present then it must be Linux or legacy OSX
-		if(fileData.includes(unixLineEnding)) {
+		if(fileData.includes(this.lineEnding.unix)) {
 			this.options.newLineCharacter = unixLineEnding;
 			return unixLineEnding;
 		}
-		if(fileData.includes(legacyOsxLineEnding)) {
+		if(fileData.includes(this.lineEnding.legacyOsx)) {
 			this.options.newLineCharacter = legacyOsxLineEnding;
 			return legacyOsxLineEnding;
 		}

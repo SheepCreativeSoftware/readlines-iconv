@@ -127,4 +127,48 @@ describe('#readlinesSync', function () {
 		} while(currentLine !== null);
 		fileHandler.close();
 	});
+	it('Should return the same text line by line with a file using LF and UTF16', function () {
+		const fileHandler = new ReadLinesSync({ encoding: 'UTF16-LE' });
+		let index = 0;
+		let currentLine = '';
+		fileHandler.open('./test/textfileUTF16.txt');
+		do {
+			currentLine = fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
+	it('Should return the same text line by line with a file using CRLF and UTF16', function () {
+		const fileHandler = new ReadLinesSync({ encoding: 'UTF16-LE' });
+		let index = 0;
+		let currentLine = '';
+		fileHandler.open('./test/textfileWinUTF16.txt');
+		do {
+			currentLine = fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
+	it('Should return the same text line by line with a file using LF (manually defined) and UTF16', function () {
+		const fileHandler = new ReadLinesSync({ encoding: 'UTF16-LE', newLineCharacter: '\n' });
+		let index = 0;
+		let currentLine = '';
+		fileHandler.open('./test/textfileUTF16.txt');
+		do {
+			currentLine = fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
+	it('Should return the same text line by line with a file using CRLF (manually defined) and UTF16', function () {
+		const fileHandler = new ReadLinesSync({ encoding: 'UTF16-LE', newLineCharacter: '\r\n' });
+		let index = 0;
+		let currentLine = '';
+		fileHandler.open('./test/textfileWinUTF16.txt');
+		do {
+			currentLine = fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
 });

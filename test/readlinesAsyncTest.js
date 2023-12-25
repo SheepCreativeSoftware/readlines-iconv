@@ -125,4 +125,48 @@ describe('#readlinesAsync', function () {
 		} while(currentLine !== null);
 		await fileHandler.close();
 	});
+	it('Should return the same text line by line with a file using LF and UTF16', async function () {
+		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE' });
+		let index = 0;
+		let currentLine = '';
+		await fileHandler.open('./test/textfileUTF16.txt');
+		do {
+			currentLine = await fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
+	it('Should return the same text line by line with a file using CRLF and UTF16', async function () {
+		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE' });
+		let index = 0;
+		let currentLine = '';
+		await fileHandler.open('./test/textfileWinUTF16.txt');
+		do {
+			currentLine = await fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
+	it('Should return the same text line by line with a file using LF (manually defined) and UTF16', async function () {
+		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE', 'newLineCharacter': '\n' });
+		let index = 0;
+		let currentLine = '';
+		await fileHandler.open('./test/textfileUTF16.txt');
+		do {
+			currentLine = await fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
+	it('Should return the same text line by line with a file using CRLF (manually defined) and UTF16', async function () {
+		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE', newLineCharacter: '\r\n' });
+		let index = 0;
+		let currentLine = '';
+		await fileHandler.open('./test/textfileWinUTF16.txt');
+		do {
+			currentLine = await fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+	});
 });
