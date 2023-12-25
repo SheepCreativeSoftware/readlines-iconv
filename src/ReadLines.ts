@@ -54,7 +54,8 @@ class ReadLines {
 		return this.endOfFileReached;
 	}
 
-	protected popFirstLineCashed() {
+	/** Removes and reutrns the first cached element */
+	protected popFirstLineCached() {
 		if(this.linesCached.length) {
 			const line = this.linesCached.shift();
 			if(typeof line !== 'undefined') return line;
@@ -62,12 +63,14 @@ class ReadLines {
 		return null;
 	}
 
+	/** Reset init params */
 	protected reset() {
 		this.endOfFileReached = false;
 		this.linesCached = [];
 		this.lastCachedLine = '';
 	}
 
+	/** Returns the line ending of the file and stores this internally for later usage otherwise returns `null` */
 	protected getFileLineEnding(fileData: Buffer | undefined): string | null {
 		if(typeof fileData === 'undefined') return null;
 		if(this.options.newLineCharacter !== null && fileData.includes(this.options.newLineCharacter)) return this.options.newLineCharacter;
@@ -90,6 +93,7 @@ class ReadLines {
 		return null;
 	}
 
+	/** Turns buffer data into fully converted cached lines */
 	protected handleBuffer(buffers: Buffer[], bytesRead: number, totalBytesRead: number) {
 		let bufferData = Buffer.concat(buffers);
 
@@ -103,7 +107,8 @@ class ReadLines {
 		if(totalBytesRead) this.constructLines(bufferData);
 	}
 
-	protected constructLines(bufferData: Buffer) {
+	/** Converts buffer data into single lines */
+	private constructLines(bufferData: Buffer) {
 		let textData = iconv.decode(bufferData, this.options.encoding);
 
 		// Last line is part of this first line if it is not empty

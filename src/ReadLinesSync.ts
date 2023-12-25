@@ -66,7 +66,7 @@ class ReadLinesSync extends ReadLines {
 		}
 
 		if(this.getLinesCached().length) {
-			const line = this.popFirstLineCashed();
+			const line = this.popFirstLineCached();
 			if(line !== null) return line;
 			throw new Error('Unexpected undefined line end');
 		}
