@@ -1,6 +1,6 @@
 {
   "name": "readlines-iconv",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Handler that returns a file line by line with a wide range of supported encodings",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,8 +21,8 @@
     "readfile",
     "linebyline",
     "sync",
-	"async",
-	"promises",
+    "async",
+    "promises",
     "iconv",
     "encoding"
   ],
