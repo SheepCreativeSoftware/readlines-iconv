@@ -17,7 +17,7 @@ class ReadLines {
 
 	constructor({
 		encoding='utf8',
-		minBuffer=1024,
+		minBuffer=16384,
 		newLineCharacter=null,
 	}: ReadLinesOptionsConstructor) {
 		this.options = {
