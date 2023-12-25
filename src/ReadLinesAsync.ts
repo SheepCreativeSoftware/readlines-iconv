@@ -9,28 +9,30 @@ const lastElement = -1;
 /** Handler that returns a file line by line, with automatic evaluation of end of line charcter and supports tons of encodings */
 class ReadLinesAsync extends ReadLines {
 	private filePosition: number;
-	private filePath: PathLike;
 	private fileHandler: fs.FileHandle | null;
 
-	constructor(filePath: PathLike, options: ReadLinesAsyncOptionsConstructor) {
+	constructor(options: ReadLinesAsyncOptionsConstructor) {
 		super(options || {});
 		this.filePosition = zero;
 		this.fileHandler = null;
-		this.filePath = filePath;
 	}
 
-	public async open() {
-		if(this.fileHandler !== null) return;
-		this.fileHandler = await fs.open(this.filePath, 'r');
+	/* Opens a new file */
+	public async open(filePath: PathLike) {
+		if(this.fileHandler !== null) throw new Error('Cannot open file. A file is already open');
+		this.fileHandler = await fs.open(filePath, 'r');
 	}
 
+	/* Closes the currently opened file */
 	public async close() {
 		if(this.fileHandler === null) return;
 		await this.fileHandler.close();
+		this.filePosition = zero;
 		this.fileHandler = null;
 		this.reset();
 	}
 
+	/** Reads a chunk of data from the file and starts evaluating the lines */
 	private async readChunk() {
 		if(this.fileHandler === null) throw new Error('File not or no longer open');
 		let bytesRead = 0;
@@ -54,6 +56,7 @@ class ReadLinesAsync extends ReadLines {
 		this.handleBuffer(buffers, bytesRead, totalBytesRead);
 	}
 
+	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
 	public async next(): Promise<string | null> {
 		if(this.fileHandler === null) return null;
 

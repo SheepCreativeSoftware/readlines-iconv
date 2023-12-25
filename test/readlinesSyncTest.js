@@ -30,9 +30,10 @@ const lines = [
 
 describe('#readlinesSync', function () {
 	it('Should return the same text line by line and should end with null', function () {
-		const fileHandler = new ReadLinesSync('./test/textfile.txt');
+		const fileHandler = new ReadLinesSync();
 		let index = 0;
 		let currentLine = '';
+		fileHandler.open('./test/textfile.txt');
 		do {
 			currentLine = fileHandler.next();
 			assert.deepEqual(currentLine, lines[index]);
@@ -40,9 +41,10 @@ describe('#readlinesSync', function () {
 		} while(currentLine !== null);
 	});
 	it('Should return the same text line by line and should end with null with windows line endings', function () {
-		const fileHandler = new ReadLinesSync('./test/textfileWin.txt');
+		const fileHandler = new ReadLinesSync();
 		let index = 0;
 		let currentLine = '';
+		fileHandler.open('./test/textfileWin.txt');
 		do {
 			currentLine = fileHandler.next();
 			assert.deepEqual(currentLine, lines[index]);
@@ -50,33 +52,38 @@ describe('#readlinesSync', function () {
 		} while(currentLine !== null);
 	});
 	it('Should return null if closed', function() {
-		const fileHandler = new ReadLinesSync('./test/textfile.txt', {});
+		const fileHandler = new ReadLinesSync();
+		fileHandler.open('./test/textfile.txt');
 		fileHandler.close();
 		assert.deepEqual(fileHandler.next(), null);
 		fileHandler.close();
 	});
 	it('Should return text with converted encoding', function() {
-		const fileHandler = new ReadLinesSync('./test/textfileWin1252.txt', { encoding: 'win1252', newLineCharacter: '\n' });
+		const fileHandler = new ReadLinesSync({ encoding: 'win1252', newLineCharacter: '\n' });
+		fileHandler.open('./test/textfileWin1252.txt');
 		const line = fileHandler.next();
 		assert.deepEqual(line, 'ßäöüáéàâ');
 		fileHandler.close();
 	});
 	it('Should not throw an error if file has no line ending', function() {
-		const fileHandler = new ReadLinesSync('./test/textfileWin1252.txt');
+		const fileHandler = new ReadLinesSync();
+		fileHandler.open('./test/textfileWin1252.txt');
 		assert.doesNotThrow(() => {
 			fileHandler.next();
 		});
 		fileHandler.close();
 	});
 	it('Should not throw an error if wrong file line ending is set', function() {
-		const fileHandler = new ReadLinesSync('./test/textfile.txt', { newLineCharacter: '\r\n' });
+		const fileHandler = new ReadLinesSync({ newLineCharacter: '\r\n' });
+		fileHandler.open('./test/textfile.txt');
 		assert.doesNotThrow(() => {
 			fileHandler.next();
 		});
 		fileHandler.close();
 	});
 	it('Should return the same text line by line even in case a wrong line ending has been defined', function () {
-		const fileHandler = new ReadLinesSync('./test/textfile.txt', { newLineCharacter: '\r\n' });
+		const fileHandler = new ReadLinesSync({ newLineCharacter: '\r\n' });
+		fileHandler.open('./test/textfile.txt');
 		let index = 0;
 		let currentLine = '';
 		do {
@@ -86,12 +93,36 @@ describe('#readlinesSync', function () {
 		} while(currentLine !== null);
 	});
 	it('Should return the same text line by line even with a buffer of 5', function () {
-		const fileHandler = new ReadLinesSync('./test/textfile.txt', { minBuffer: 5 });
+		const fileHandler = new ReadLinesSync({ minBuffer: 5 });
+		fileHandler.open('./test/textfile.txt');
 		let index = 0;
 		let currentLine = '';
 		do {
 			currentLine = fileHandler.next();
 			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+		fileHandler.close();
+	});
+	it('Should work as normal even after opening another file', function () {
+		const fileHandler = new ReadLinesSync();
+		let index = 0;
+		let currentLine = '';
+		fileHandler.open('./test/textfile.txt');
+		do {
+			currentLine = fileHandler.next();
+			assert.deepEqual(currentLine, lines[index]);
+			index++;
+		} while(currentLine !== null);
+		fileHandler.close();
+
+		index = 0;
+		fileHandler.open('./test/textfile2.txt');
+		do {
+			currentLine = fileHandler.next();
+			let expected = lines[index];
+			if(expected !== null) expected += '2';
+			assert.deepEqual(currentLine, expected);
 			index++;
 		} while(currentLine !== null);
 		fileHandler.close();

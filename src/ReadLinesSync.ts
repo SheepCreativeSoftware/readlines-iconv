@@ -10,19 +10,28 @@ class ReadLinesSync extends ReadLines {
 	private fileDescriptor: number | null;
 	private filePosition: number;
 
-	constructor(filePath: fs.PathLike, options: ReadLinesSyncOptionsConstructor) {
+	constructor(options: ReadLinesSyncOptionsConstructor) {
 		super(options || {});
 		this.filePosition = zero;
+		this.fileDescriptor = null;
+	}
+
+	/* Opens a new file */
+	public open(filePath: fs.PathLike) {
+		if(this.fileDescriptor !== null) throw new Error('Cannot open file. A file is already open');
 		this.fileDescriptor = fs.openSync(filePath, 'r');
 	}
 
+	/* Closes the currently opened file */
 	public close() {
 		if(!this.fileDescriptor) return;
 		fs.closeSync(this.fileDescriptor);
+		this.filePosition = zero;
 		this.fileDescriptor = null;
 		this.reset();
 	}
 
+	/** Reads a chunk of data from the file and starts evaluating the lines */
 	private readChunk() {
 		if(this.fileDescriptor === null) throw new Error('File not or no longer open');
 		let bytesRead = 0;
@@ -45,6 +54,7 @@ class ReadLinesSync extends ReadLines {
 		this.handleBuffer(buffers, bytesRead, totalBytesRead);
 	}
 
+	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
 	public next(): string | null {
 		if(this.fileDescriptor === null) return null;
 
