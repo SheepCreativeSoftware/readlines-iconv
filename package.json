@@ -21,7 +21,9 @@
     "readfile",
     "linebyline",
     "sync",
-    "incov",
+	"async",
+	"promises",
+    "iconv",
     "encoding"
   ],
   "author": "Marina Egner",
