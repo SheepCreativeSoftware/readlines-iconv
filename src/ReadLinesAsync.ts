@@ -12,12 +12,8 @@ class ReadLinesAsync extends ReadLines {
 	private filePath: PathLike;
 	private fileHandler: fs.FileHandle | null;
 
-	constructor(filePath: PathLike, {
-		encoding='uft8',
-		minBuffer=1024,
-		newLineCharacter=null,
-	}: ReadLinesAsyncOptionsConstructor) {
-		super({ encoding, minBuffer, newLineCharacter });
+	constructor(filePath: PathLike, options: ReadLinesAsyncOptionsConstructor) {
+		super(options || {});
 		this.filePosition = zero;
 		this.fileHandler = null;
 		this.filePath = filePath;
@@ -64,7 +60,7 @@ class ReadLinesAsync extends ReadLines {
 		if(this.getLinesCached().length === zero) await this.readChunk();
 
 		if(this.isEndOfLineReached() && this.getLinesCached().length === zero) {
-			this.close();
+			await this.close();
 			return null;
 		}
 

@@ -16,7 +16,7 @@ class ReadLines {
 	private lastCachedLine: string;
 
 	constructor({
-		encoding='uft8',
+		encoding='utf8',
 		minBuffer=1024,
 		newLineCharacter=null,
 	}: ReadLinesOptionsConstructor) {
@@ -30,31 +30,31 @@ class ReadLines {
 		this.lastCachedLine = '';
 	}
 
-	public getOptions(): ReadLinesOptions {
+	protected getOptions(): ReadLinesOptions {
 		return this.options;
 	}
 
-	public getLinesCached() {
+	protected getLinesCached() {
 		return this.linesCached;
 	}
 
-	public getLastCachedLine() {
+	protected getLastCachedLine() {
 		return this.lastCachedLine;
 	}
 
-	public setEndOfLineReached(value: boolean) {
+	protected setEndOfLineReached(value: boolean) {
 		this.endOfFileReached = value;
 	}
 
-	public setLastCachedLine(value: string) {
+	protected setLastCachedLine(value: string) {
 		this.lastCachedLine = value;
 	}
 
-	public isEndOfLineReached() {
+	protected isEndOfLineReached() {
 		return this.endOfFileReached;
 	}
 
-	public popFirstLineCashed() {
+	protected popFirstLineCashed() {
 		if(this.linesCached.length) {
 			const line = this.linesCached.shift();
 			if(typeof line !== 'undefined') return line;
@@ -62,13 +62,13 @@ class ReadLines {
 		return null;
 	}
 
-	public reset() {
+	protected reset() {
 		this.endOfFileReached = false;
 		this.linesCached = [];
 		this.lastCachedLine = '';
 	}
 
-	public getFileLineEnding(fileData: Buffer | undefined): string | null {
+	protected getFileLineEnding(fileData: Buffer | undefined): string | null {
 		if(typeof fileData === 'undefined') return null;
 		if(this.options.newLineCharacter !== null && fileData.includes(this.options.newLineCharacter)) return this.options.newLineCharacter;
 
@@ -90,7 +90,7 @@ class ReadLines {
 		return null;
 	}
 
-	public handleBuffer(buffers: Buffer[], bytesRead: number, totalBytesRead: number) {
+	protected handleBuffer(buffers: Buffer[], bytesRead: number, totalBytesRead: number) {
 		let bufferData = Buffer.concat(buffers);
 
 		if(bytesRead < this.getOptions().minBuffer) {
@@ -103,8 +103,7 @@ class ReadLines {
 		if(totalBytesRead) this.constructLines(bufferData);
 	}
 
-	public constructLines(bufferData: Buffer) {
-		if(this.options.newLineCharacter === null) throw new Error('Invalid Line ending: not found');
+	protected constructLines(bufferData: Buffer) {
 		let textData = iconv.decode(bufferData, this.options.encoding);
 
 		// Last line is part of this first line if it is not empty
@@ -112,7 +111,11 @@ class ReadLines {
 			textData = this.lastCachedLine + textData;
 			this.lastCachedLine = '';
 		}
-		const lines = textData.split(this.options.newLineCharacter);
+		const lines = [];
+
+		// If line ending has not been found then expect, that everything from the file is one single sentence
+		if(this.options.newLineCharacter === null) lines.push(textData);
+		else lines.push(...textData.split(this.options.newLineCharacter));
 
 		if(!this.endOfFileReached && lines.length > oneElement) {
 			// Pop last out for next reading (Is a incomplete string in case it is not empty)

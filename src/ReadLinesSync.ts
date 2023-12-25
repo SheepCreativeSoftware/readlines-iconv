@@ -10,12 +10,8 @@ class ReadLinesSync extends ReadLines {
 	private fileDescriptor: number | null;
 	private filePosition: number;
 
-	constructor(filePath: fs.PathLike, {
-		encoding='uft8',
-		minBuffer=1024,
-		newLineCharacter=null,
-	}: ReadLinesSyncOptionsConstructor) {
-		super({ encoding, minBuffer, newLineCharacter });
+	constructor(filePath: fs.PathLike, options: ReadLinesSyncOptionsConstructor) {
+		super(options || {});
 		this.filePosition = zero;
 		this.fileDescriptor = fs.openSync(filePath, 'r');
 	}
