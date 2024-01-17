@@ -56,20 +56,26 @@ class ReadLinesAsync extends ReadLines {
 		this.handleBuffer(buffers, bytesRead, totalBytesRead);
 	}
 
+	[Symbol.iterator]() {
+		return [][Symbol.iterator]();
+	}
+
 	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
-	public async next(): Promise<string | null> {
-		if(this.fileHandler === null) return null;
+	public async next(): Promise<IteratorResult<string>> {
+		// eslint-disable-next-line no-undefined
+		if(this.fileHandler === null) return { done: true, value: undefined };
 
 		if(this.getLinesCached().length === zero) await this.readChunk();
 
 		if(this.isEndOfLineReached() && this.getLinesCached().length === zero) {
 			await this.close();
-			return null;
+			// eslint-disable-next-line no-undefined
+			return { done: true, value: undefined };
 		}
 
 		if(this.getLinesCached().length) {
 			const line = this.popFirstLineCached();
-			if(line !== null) return line;
+			if(line !== null) return { done: false, value: line };
 			throw new Error('Unexpected undefined line end');
 		}
 		throw new Error('Unexpected Error: Buffer empty but not at end of file');

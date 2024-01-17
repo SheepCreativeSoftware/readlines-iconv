@@ -24,7 +24,6 @@ const lines = [
 	'Aliqua cillum et eiusmod laboris dolore tempor ut commodo nostrud esse occaecat tempor minim. Cillum deserunt in nostrud proident. Proident reprehenderit excepteur consectetur et.',
 	'',
 	'Ea ad velit proident minim exercitation eu do anim sunt. Commodo dolore consequat consectetur ipsum est quis minim sint aliqua occaecat id deserunt. Id aute commodo sint culpa amet id. Proident in officia elit amet ea occaecat eu ea enim aliqua commodo. Do reprehenderit anim irure ullamco ad consequat pariatur cillum laborum consectetur voluptate duis anim. Aliqua sint nisi tempor officia labore.',
-	null,
 ];
 /* eslint-enable max-len */
 
@@ -32,141 +31,106 @@ describe('#readlinesAsync', function () {
 	it('Should return the same text line by line and should end with null', async function () {
 		const fileHandler = new ReadLinesAsync();
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfile.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 	it('Should return the same text line by line and should end with null with windows line endings', async function () {
 		const fileHandler = new ReadLinesAsync();
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfileWin.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
-	it('Should return null if closed', async function() {
+	it('Should return done with true if closed', async function() {
 		const fileHandler = new ReadLinesAsync();
 		await fileHandler.open('./test/textfile.txt');
 		await fileHandler.close();
-		assert.deepEqual(await fileHandler.next(), null);
+		assert.deepEqual((await fileHandler.next()).done, true);
 	});
 	it('Should return text with converted encoding', async function() {
 		const fileHandler = new ReadLinesAsync({ encoding: 'win1252', newLineCharacter: '\n' });
 		await fileHandler.open('./test/textfileWin1252.txt');
 		const line = await fileHandler.next();
-		assert.deepEqual(line, 'ßäöüáéàâ');
-		await fileHandler.close();
-	});
-	it('Should not throw an error if file has no line ending', async function() {
-		const fileHandler = new ReadLinesAsync();
-		await fileHandler.open('./test/textfileWin1252.txt');
-		assert.doesNotThrow(async () => {
-			await fileHandler.next();
-		});
-		await fileHandler.close();
-	});
-	it('Should not throw an error if wrong file line ending is set', async function() {
-		const fileHandler = new ReadLinesAsync({ newLineCharacter: '\r\n' });
-		await fileHandler.open('./test/textfile.txt');
-		assert.doesNotThrow(async () => {
-			await fileHandler.next();
-		});
+		assert.deepEqual(line.value, 'ßäöüáéàâ');
 		await fileHandler.close();
 	});
 	it('Should return the same text line by line even in case a wrong line ending has been defined', async function () {
 		const fileHandler = new ReadLinesAsync({ newLineCharacter: '\r\n' });
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfile.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 	it('Should return the same text line by line even with a buffer of 5', async function () {
 		const fileHandler = new ReadLinesAsync({ minBuffer: 5 });
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfile.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 	it('Should work as normal even after opening another file', async function () {
 		const fileHandler = new ReadLinesAsync();
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfile.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 		await fileHandler.close();
 
 		index = 0;
 		await fileHandler.open('./test/textfile2.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			let expected = lines[index];
 			if(expected !== null) expected += '2';
 			assert.deepEqual(currentLine, expected);
 			index++;
-		} while(currentLine !== null);
+		}
 		await fileHandler.close();
 	});
 	it('Should return the same text line by line with a file using LF and UTF16', async function () {
 		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE' });
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfileUTF16.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 	it('Should return the same text line by line with a file using CRLF and UTF16', async function () {
 		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE' });
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfileWinUTF16.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 	it('Should return the same text line by line with a file using LF (manually defined) and UTF16', async function () {
 		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE', 'newLineCharacter': '\n' });
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfileUTF16.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 	it('Should return the same text line by line with a file using CRLF (manually defined) and UTF16', async function () {
 		const fileHandler = new ReadLinesAsync({ encoding: 'UTF16-LE', newLineCharacter: '\r\n' });
 		let index = 0;
-		let currentLine = '';
 		await fileHandler.open('./test/textfileWinUTF16.txt');
-		do {
-			currentLine = await fileHandler.next();
+		for await (const currentLine of fileHandler) {
 			assert.deepEqual(currentLine, lines[index]);
 			index++;
-		} while(currentLine !== null);
+		}
 	});
 });

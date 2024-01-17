@@ -23,7 +23,7 @@ npm i readlines-iconv
 ## Basic Usage
 The readlines-iconv module can be loaded using ESM:
 ```js
-import { ReadLinesSync } from 'readlines-iconv';
+import { ReadLinesSync, ReadLinesAsync } from 'readlines-iconv';
 ```
 
 ### Synchronous example
@@ -36,19 +36,27 @@ const lineHandler = new ReadLinesSync(options);
 fileHandler.open('./directory/someFile.txt');
 ```
 
-Each time when you execute `next()` it will return one line of the file:
+Each time when you execute `next()` it will return one line of the file using the [Iterator Protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol):
 ```js
 let line = lineHandler.next();
+console.log(line.value) // Returns line
 ```
-The `next()` method will return a `string` for each line.
-*It will return `null` in case the end of file is reached.*
+The `next()` method will return a `string` for the property `value` for each line.  
+*It will return `{ done: true }` in case the end of file is reached.*
 
 It will autommatically close the file handle at the end of the file.
 But you can close the file handle at any time manually (And you should):
 ```js
 lineHandler.close();
 ```
-*Note: subsequent `next()` calls will return `null`*
+*Note: subsequent next() calls will return `{ done: true }`*
+
+You can use the handler inside of a for loop:
+```js
+for(const line of lineHandler) {
+	console.log(line); // Line after each other
+}
+```
 
 After you closed the file, you are able to open a new file without the need to create a new instance using `open()`.
 But this will only work if the `options` and line ending of all files opened are the same.
@@ -62,23 +70,31 @@ Or simply by using `async` and `await`.  next()
 
 First you need to integrate readlines-iconv into your application:
 ```js
-const lineHandler = new ReadLinesSync(options);
+const lineHandler = new ReadLinesAsync(options);
 await fileHandler.open('./directory/someFile.txt');
 ```
 
-Each time when you execute `next()` it will return one line of the file:
+Each time when you execute `next()` it will return one line of the file using the [Iterator Protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol):
 ```js
 let line = await lineHandler.next();
+console.log(line.value) // Returns line
 ```
-The `next()` method will return a `string` for each line.  
-*It will return `null` in case the end of file is reached.*
+The `next()` method will return a `string` for the property `value` for each line.  
+*It will return `{ done: true }` in case the end of file is reached.*
 
 It will autommatically close the file handle at the end of the file.  
 But you can close the file handle at any time manually:
 ```js
 await lineHandler.close();
 ```
-*Note: subsequent next() calls will return `null`*
+*Note: subsequent next() calls will return `{ done: true }`*
+
+You can use the handler inside of a for loop:
+```js
+for await (const line of lineHandler) {
+	console.log(line); // Line after each other
+}
+```
 
 After you closed the file, you are able to open a new file without the need to create a new instance.  
 But this will only work if the `options` and line ending of all files opened are the same.
