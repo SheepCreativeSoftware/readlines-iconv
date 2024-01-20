@@ -55,7 +55,7 @@ class ReadLinesSync extends ReadLines {
 	}
 
 	[Symbol.iterator]() {
-		return [][Symbol.iterator]();
+		return this;
 	}
 
 	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
