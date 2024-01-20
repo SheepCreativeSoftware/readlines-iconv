@@ -60,7 +60,7 @@ class ReadLinesAsync extends ReadLines {
 		return this;
 	}
 
-	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
+	/** Returns the next line of the file. Returns `{ done: true }` in case the end of file has reached */
 	public async next(): Promise<IteratorResult<string>> {
 		// eslint-disable-next-line no-undefined
 		if(this.fileHandler === null) return { done: true, value: undefined };
