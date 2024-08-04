@@ -56,8 +56,8 @@ class ReadLinesAsync extends ReadLines {
 		this.handleBuffer(buffers, bytesRead, totalBytesRead);
 	}
 
-	[Symbol.iterator]() {
-		return [][Symbol.iterator]();
+	[Symbol.asyncIterator]() {
+		return this;
 	}
 
 	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
