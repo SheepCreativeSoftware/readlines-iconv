@@ -1,15 +1,28 @@
 {
   "name": "readlines-iconv",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Handler that returns a file line by line with a wide range of supported encodings",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "module": "ES2020",
   "type": "module",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
+  },
   "scripts": {
-    "test": "tsc -b && mocha test/ --recursive",
-    "prepare": "tsc -b",
-    "prepublish": "npm run prepare"
+    "clean": "rm -rf dist/",
+    "prebuild": "yarn run clean",
+    "prepublish": "yarn run build",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:tsc",
+    "test:unit": "jest --config ./test/jest-unit.config.cjs",
+    "lint:eslint": "eslint --cache --cache-strategy content ./src/**/*  ",
+    "lint:eslint:fix": "yarn lint:eslint --fix",
+    "lint:prettier": "npx prettier --check \"**/*.{xml,json,yml,yaml}\"",
+    "lint:prettier:fix": "npx prettier --write \"**/*.{xml,json,yml,yaml}\"",
+    "lint:tsc": "tsc --noEmit",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -39,11 +52,18 @@
     "iconv-lite": "^0.6.3"
   },
   "devDependencies": {
+    "husky": "^9.1.4",
+    "@swc/core": "^1.7.6",
+    "@swc/jest": "^0.2.36",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.10.5",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "assert": "^2.1.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "jest-extended": "^4.0.2",
     "mocha": "^10.2.0",
     "typescript": "^5.3.3"
   }

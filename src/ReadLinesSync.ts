@@ -18,13 +18,13 @@ class ReadLinesSync extends ReadLines {
 
 	/* Opens a new file */
 	public open(filePath: fs.PathLike) {
-		if(this.fileDescriptor !== null) throw new Error('Cannot open file. A file is already open');
+		if (this.fileDescriptor !== null) throw new Error('Cannot open file. A file is already open');
 		this.fileDescriptor = fs.openSync(filePath, 'r');
 	}
 
 	/* Closes the currently opened file */
 	public close() {
-		if(!this.fileDescriptor) return;
+		if (!this.fileDescriptor) return;
 		fs.closeSync(this.fileDescriptor);
 		this.filePosition = zero;
 		this.fileDescriptor = null;
@@ -33,7 +33,7 @@ class ReadLinesSync extends ReadLines {
 
 	/** Reads a chunk of data from the file and starts evaluating the lines */
 	private readChunk() {
-		if(this.fileDescriptor === null) throw new Error('File not or no longer open');
+		if (this.fileDescriptor === null) throw new Error('File not or no longer open');
 		let bytesRead = 0;
 		let totalBytesRead = 0;
 		const buffers = [] as Buffer[];
@@ -49,31 +49,31 @@ class ReadLinesSync extends ReadLines {
 			buffers.push(readBuffer);
 
 			// Will either stop if Line ending has found or if bytes are zero which is the case when at end of file
-		} while(bytesRead && this.getFileLineEnding(buffers.at(lastElement)) === null);
+		} while (bytesRead && this.getFileLineEnding(buffers.at(lastElement)) === null);
 
 		this.handleBuffer(buffers, bytesRead, totalBytesRead);
 	}
 
 	[Symbol.iterator]() {
-		return [][Symbol.iterator]();
+		return this;
 	}
 
-	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
+	/** Returns the next line of the file. Returns `{ done: true }` in case the end of file has reached */
 	public next(): IteratorResult<string> {
 		// eslint-disable-next-line no-undefined
-		if(this.fileDescriptor === null) return { done: true, value: undefined };
+		if (this.fileDescriptor === null) return { done: true, value: undefined };
 
-		if(this.getLinesCached().length === zero) this.readChunk();
+		if (this.getLinesCached().length === zero) this.readChunk();
 
-		if(this.isEndOfLineReached() && this.getLinesCached().length === zero) {
+		if (this.isEndOfLineReached() && this.getLinesCached().length === zero) {
 			this.close();
 			// eslint-disable-next-line no-undefined
 			return { done: true, value: undefined };
 		}
 
-		if(this.getLinesCached().length) {
+		if (this.getLinesCached().length) {
 			const line = this.popFirstLineCached();
-			if(line !== null) return { done: false, value: line };
+			if (line !== null) return { done: false, value: line };
 			throw new Error('Unexpected undefined line end');
 		}
 		throw new Error('Unexpected Error: Buffer empty but not at end of file');
