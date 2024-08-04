@@ -55,10 +55,10 @@ class ReadLinesSync extends ReadLines {
 	}
 
 	[Symbol.iterator]() {
-		return this;
+		return [][Symbol.iterator]();
 	}
 
-	/** Returns the next line of the file. Returns `{ done: true }` in case the end of file has reached */
+	/** Returns the next line of the file. Returns `null` in case the end of file has reached */
 	public next(): IteratorResult<string> {
 		// eslint-disable-next-line no-undefined
 		if (this.fileDescriptor === null) return { done: true, value: undefined };
